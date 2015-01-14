@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html ng-app="habitApp" >
+<head>
+    <meta charset="utf-8">
+    <title>Angular Quiz Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js"></script>
+    <script src="app.js"></script>
+</head>
+<body ng-controller="habitExportCtrl">
+<div>
+    <p>User-id: <input ng-model="userId"></input></p>
+    <p>Api-key: <input ng-model="apiKey"></input></p>
+</div>
+<div>
+    <button ng-click='checkServer()'>Check the server</button>
+    <button ng-click='fetchData()'>Fetch Data</button>
+</div>
+<p>{{msgEcho}}</p>
+</body>
+</html>

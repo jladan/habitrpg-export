@@ -18,5 +18,6 @@
     <button ng-click='fetchData()'>Fetch Data</button>
 </div>
 <pre ng-bind-html="trust(csv)"></pre>
+<a download="habits.csv" ng-href="{{ csvURL }}" ng-show="csvURL">Download CSV</a>
 </body>
 </html>

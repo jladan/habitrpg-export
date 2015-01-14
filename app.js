@@ -1,6 +1,11 @@
 'use strict';
 
 angular.module('habitApp', ['ngSanitize'])
+.config(['$compileProvider', function ($compileProvider) {
+    //allow blob data in URLs
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|blob):/);
+}])
+
 .controller('habitExportCtrl', ['$scope', '$http', '$sce', function ($scope,$http,$sce) {
     var rooturl = 'https://habitrpg.com:443/api/v2/';
 
@@ -18,6 +23,10 @@ angular.module('habitApp', ['ngSanitize'])
             csv += '"'+task.type +'","'+ task.text +'","'+ task.completed +'"\n';
         }
         $scope.csv = csv;
+
+        //create download link
+        var blob = new Blob([csv], { type: 'text/csv' });
+        $scope.csvURL = (window.URL || window.webkitURL).createObjectURL(blob);
     };
 
     $scope.checkServer = function () {

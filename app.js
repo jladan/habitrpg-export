@@ -1,11 +1,23 @@
 'use strict';
 
-angular.module('habitApp', [])
-.controller('habitExportCtrl', ['$scope', '$http', function ($scope,$http) {
+angular.module('habitApp', ['ngSanitize'])
+.controller('habitExportCtrl', ['$scope', '$http', '$sce', function ($scope,$http,$sce) {
     var rooturl = 'https://habitrpg.com:443/api/v2/';
 
     var processFetch = function (data) {
-        $scope.msgEcho = data;
+        // The data returned is already parsed as JSON!
+        $scope.todos = [];
+        $scope.habits = [];
+        $scope.dailies = [];
+        var csv = '"type","text","completed"\n';
+        for (var i=0; i<data.length; i++) {
+            var task = data[i]
+            if (task.type === "habit") $scope.habits.push(task);
+            if (task.type === "daily") $scope.dailies.push(task);
+            if (task.type === "todo") $scope.todos.push(task);
+            csv += '"'+task.type +'","'+ task.text +'","'+ task.completed +'"\n';
+        }
+        $scope.csv = csv;
     };
 
     $scope.checkServer = function () {
@@ -24,5 +36,9 @@ angular.module('habitApp', [])
         };
 
         $http(req).success(processFetch).error(processFetch);
-    }
+    };
+    
+    $scope.trust = function(s) {
+        return $sce.trustAsHtml(s);
+    };
 }]);

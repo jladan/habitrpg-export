@@ -16,6 +16,7 @@
 <div id="buttons">
     <button ng-click='checkServer()'>Check the server</button>
     <button ng-click='fetchData()'>Fetch Data</button>
+    <a download="habits.csv" ng-href="{{ csvURL }}" ng-show="csvURL">Download CSV</a>
 </div>
 <pre ng-bind-html="trust(csv)"></pre>
 </body>

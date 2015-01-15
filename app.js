@@ -30,9 +30,33 @@ angular.module('habitApp', ['ngSanitize'])
     return tf;
 })
 
-.controller('habitExportCtrl', ['$scope', '$http', '$sce', 'taskFormatter', function ($scope,$http,$sce, formatter) {
+.factory('habitAPI', ['$http', function($http) {
     var rooturl = 'https://habitrpg.com:443/api/v2/';
-    var MIME_TYPE = 'text/csv';
+
+    var api = {};
+    api.checkServer = function (callback) {
+        $http.get(rooturl + 'status').success(callback);
+    };
+
+    api.fetchData = function (user, key, success, error) {
+        var req = {
+                method: 'GET',
+                url: rooturl + 'user/tasks',
+                headers: {
+                'x-api-key': key, 
+                'x-api-user': user
+                },
+                data: {},
+        };
+
+        $http(req).success(success).error(error || success);
+    };
+
+    return api;
+}])
+
+.controller('habitExportCtrl', ['$scope', '$sce', 'taskFormatter', 'habitAPI',
+        function ($scope, $sce, formatter, habitrpg) {
 
     var processFetch = function (tasks) {
         // The data returned is already parsed as JSON!
@@ -48,21 +72,13 @@ angular.module('habitApp', ['ngSanitize'])
     };
 
     $scope.checkServer = function () {
-        $http.get(rooturl + 'status').success(function(){$scope.msgEcho="server is there";})
+        habitrpg.checkServer(function() {
+            $scope.csv = "server is there";
+        });
     };
 
     $scope.fetchData = function () {
-        var req = {
-                method: 'GET',
-                url: rooturl + 'user/tasks',
-                headers: {
-                'x-api-key': $scope.apiKey,
-                'x-api-user': $scope.userId
-                },
-                data: {},
-        };
-
-        $http(req).success(processFetch).error(processFetch);
+        habitrpg.fetchData($scope.userId, $scope.apiKey, processFetch);
     };
     
     $scope.trust = function(s) {

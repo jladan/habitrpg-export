@@ -6,27 +6,40 @@ angular.module('habitApp', ['ngSanitize'])
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|blob):/);
 }])
 
-.controller('habitExportCtrl', ['$scope', '$http', '$sce', function ($scope,$http,$sce) {
+.factory('taskFormatter', function() {
+    var tf = {};
+
+    var csvComponents = ['type', 'text', 'completed'];
+
+
+    tf.csv = function(tasks) {
+        var csv = '"' + csvComponents.join('","') + '"\n';
+
+        for (var i=0; i<tasks.length; i++) {
+            var t = tasks[i];
+            var row = [];
+            csvComponents.forEach( function(header) {
+                row.push(t[header]);
+            });
+            csv += '"'+row.join('","') + '"\n';
+        }
+
+        return csv;
+    };
+
+    return tf;
+})
+
+.controller('habitExportCtrl', ['$scope', '$http', '$sce', 'taskFormatter', function ($scope,$http,$sce, formatter) {
     var rooturl = 'https://habitrpg.com:443/api/v2/';
     var MIME_TYPE = 'text/csv';
 
-    var processFetch = function (data) {
+    var processFetch = function (tasks) {
         // The data returned is already parsed as JSON!
-        $scope.todos = [];
-        $scope.habits = [];
-        $scope.dailies = [];
-        var csv = '"type","text","completed"\n';
-        for (var i=0; i<data.length; i++) {
-            var task = data[i]
-            if (task.type === "habit") $scope.habits.push(task);
-            if (task.type === "daily") $scope.dailies.push(task);
-            if (task.type === "todo") $scope.todos.push(task);
-            csv += '"'+task.type +'","'+ task.text +'","'+ task.completed +'"\n';
-        }
-        $scope.csv = csv;
+        $scope.csv = formatter.csv(tasks);
         
         //create download link
-        var blob = new Blob([csv], { type: 'text/csv' });
+        var blob = new Blob([$scope.csv], { type: 'text/csv' });
         // clean up the old object
         if ($scope.csvURL) {
             window.URL.revokeObjectURL($scope.csvURL);

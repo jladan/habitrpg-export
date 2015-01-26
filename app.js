@@ -9,16 +9,22 @@ angular.module('habitApp', ['ngSanitize'])
 .factory('taskFormatter', function() {
     var tf = {};
 
-    var csvComponents = ['type', 'text', 'completed'];
+    tf.csv = function(tasks, fields) {
+        var csvHeaders = new Array();
+        var csvFields = new Array();
+        fields.forEach( function(field) {
+            if (field.include) {
+                csvHeaders.push(field.name);
+                csvFields.push(field.header);
+            }
+        });
 
-
-    tf.csv = function(tasks) {
-        var csv = '"' + csvComponents.join('","') + '"\n';
+        var csv = '"' + csvHeaders.join('","') + '"\n';
 
         for (var i=0; i<tasks.length; i++) {
             var t = tasks[i];
             var row = [];
-            csvComponents.forEach( function(header) {
+            csvFields.forEach( function(header) {
                 row.push(t[header]);
             });
             csv += '"'+row.join('","') + '"\n';
@@ -59,8 +65,9 @@ angular.module('habitApp', ['ngSanitize'])
         function ($scope, $sce, formatter, habitrpg) {
 
     var processFetch = function (tasks) {
+        $scope.tasks = tasks;
         // The data returned is already parsed as JSON!
-        $scope.csv = formatter.csv(tasks);
+        $scope.csv = formatter.csv(tasks, $scope.fields);
         
         //create download link
         var blob = new Blob([$scope.csv], { type: 'text/csv' });
@@ -70,6 +77,57 @@ angular.module('habitApp', ['ngSanitize'])
         }
         $scope.csvURL = (window.URL || window.webkitURL).createObjectURL(blob);
     };
+
+    $scope.fields = [
+        {
+            name:       "Type",
+            header:     "type",
+            include:    true
+        }, {
+            name:       "Description",
+            header:     "text",
+            include:    true
+        }, {
+            name:       "Completed",
+            header:     "completed",
+            include:    true
+        }, {
+            name:       "Notes",
+            header:     "notes",
+            include:    true
+        }, {
+            name:       "Date Created",
+            header:     "dateCreated",
+            include:    false
+        }, {
+            name:       "Attribute",
+            header:     "attribute",
+            include:    false
+        }, {
+            name:       "Up button",
+            header:     "up",
+            include:    false
+        }, {
+            name:       "Down button",
+            header:     "down",
+            include:    false
+        }, {
+            name:       "ID",
+            header:     "id",
+            include:    false
+        }, {
+            name:       "Streak",
+            header:     "streak",
+            include:    false
+        }, {
+            name:       "Repeat",
+            header:     "repeat",
+            include:    false
+        }, {
+            name:       "Value",
+            header:     "value",
+            include:    false
+    }];
 
     $scope.checkServer = function () {
         habitrpg.checkServer(function() {

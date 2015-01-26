@@ -9,10 +9,18 @@
     <script src="app.js"></script>
 </head>
 <body ng-controller="habitExportCtrl">
-<div>
+<form>
+<fieldset>
+    <legend>HabitRPG credentials</legend>
     <p>User-id: <input style="width:30em" ng-model="userId"></input></p>
     <p>Api-key: <input style="width:30em" ng-model="apiKey"></input></p>
-</div>
+</fieldset>
+<fieldset>
+    <legend>Fields to export (csv)</legend>
+    <p ng-repeat="field in fields" style="margin:0;">
+    <input type="checkbox" ng-model="field.include">{{field.name}}</input>
+    </p>
+</fieldset>
 <div id="buttons">
     <button ng-click='checkServer()'>Check the server</button>
     <button ng-click='fetchData()'>Fetch Data</button>

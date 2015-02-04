@@ -129,6 +129,9 @@ angular.module('habitApp', ['ngSanitize'])
             include:    false
     }];
 
+    $scope.userId = localStorage.getItem("userId");
+    $scope.apiKey = localStorage.getItem("apiKey");
+
     $scope.checkServer = function () {
         habitrpg.checkServer(function() {
             $scope.csv = "server is there";
@@ -136,6 +139,8 @@ angular.module('habitApp', ['ngSanitize'])
     };
 
     $scope.fetchData = function () {
+        localStorage.setItem("userId", $scope.userId);
+        localStorage.setItem("apiKey", $scope.apiKey);
         habitrpg.fetchData($scope.userId, $scope.apiKey, processFetch);
     };
     

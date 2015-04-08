@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('habitApp', ['ngSanitize'])
+angular.module('habitApp', ['habitService', 'ngSanitize'])
 .config(['$compileProvider', function ($compileProvider) {
     //allow blob data in URLs
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|blob):/);
@@ -35,31 +35,6 @@ angular.module('habitApp', ['ngSanitize'])
 
     return tf;
 })
-
-.factory('habitAPI', ['$http', function($http) {
-    var rooturl = 'https://habitrpg.com:443/api/v2/';
-
-    var api = {};
-    api.checkServer = function (callback) {
-        $http.get(rooturl + 'status').success(callback);
-    };
-
-    api.fetchData = function (user, key, success, error) {
-        var req = {
-                method: 'GET',
-                url: rooturl + 'user/tasks',
-                headers: {
-                'x-api-key': key, 
-                'x-api-user': user
-                },
-                data: {},
-        };
-
-        $http(req).success(success).error(error || success);
-    };
-
-    return api;
-}])
 
 .controller('habitExportCtrl', ['$scope', '$sce', 'taskFormatter', 'habitAPI',
         function ($scope, $sce, formatter, habitrpg) {
@@ -129,8 +104,8 @@ angular.module('habitApp', ['ngSanitize'])
             include:    false
     }];
 
-    $scope.userId = localStorage.getItem("userId");
-    $scope.apiKey = localStorage.getItem("apiKey");
+    $scope.userId = habitrpg.getSavedId();
+    $scope.apiKey = habitrpg.getSavedKey();
 
     $scope.checkServer = function () {
         habitrpg.checkServer(function() {
@@ -139,8 +114,8 @@ angular.module('habitApp', ['ngSanitize'])
     };
 
     $scope.fetchData = function () {
-        localStorage.setItem("userId", $scope.userId);
-        localStorage.setItem("apiKey", $scope.apiKey);
+        habitrpg.saveId($scope.userId);
+        habitrpg.saveKey($scope.apiKey);
         habitrpg.fetchData($scope.userId, $scope.apiKey, processFetch);
     };
     

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html ng-app="pseudoInnApp" >
+<head>
+    <meta charset="utf-8">
+    <title>HabitRPG Pseudo-Inn</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-sanitize.js"></script>
+    <script src="js/habit-service.js"></script>
+    <script src="js/pseudo-inn-app.js"></script>
+</head>
+<body ng-controller="pseudoInnCtrl">
+<form>
+<fieldset>
+    <legend>HabitRPG credentials</legend>
+    <p>User-id: <input style="width:30em" ng-model="userId"></input></p>
+    <p>Api-key: <input style="width:30em" ng-model="apiKey"></input></p>
+</fieldset>
+<div id="buttons">
+    <button ng-click='enterInn()' ng-disabled="entering || leaving">Enter the Inn</button>
+    <button ng-click='leaveInn()' ng-disabled="entering || leaving">Leave the Inn</button>
+    <button ng-click='confirm()' ng-disabled="!(entering||leaving)">Confirm</button>
+</div>
+<p>{{prompt}}</p>
+</form>
+<div>
+    <daily ng-repeat="d in dailies" task="d"></daily>
+</div>
+</body>
+</html>

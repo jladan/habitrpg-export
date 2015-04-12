@@ -2,41 +2,56 @@
 
 div[task]
   position: relative
-  background-color: grey
+  background-color: #ccc
+  border: 1px solid #bbb
   min-height: 3.4em;
   padding-left: 3.4em;
   margin: .2em
-  &>span
+  & div             // for the task description
+    padding: .5em
+    font-size: 1.3em 
+  & .main-check
     position: absolute
+    left: 0
+    top: 0
+  & .day-checks
+    position: absolute
+    right: 0
+    top: 0
   & input[type=checkbox]
     display: none
     & + label
       width: 3em
       height: 3em
-      background-color: blue
+      background-color: #666
+      border: 1px solid #555
       display: inline-block
       margin: .2em
       cursor: pointer
-      position: absolute
+      position: relative
       left: 0
-    &:checked + label
-      background-color: green
+      top: -1px
       &:after
-        content: '\2713'
+        color #444
+        content: '\25cb'
         font-size: 2.5em;
-
-div[task] .day-checks input[type=checkbox]
-  display: none
-  & + label
-    width: 3em
-    height: 3em
-    background-color: blue
-    display: inline-block
-    margin: .2em
-    cursor: pointer
-    position: initial
-  &:checked + label
-    background-color: green
-    &:after
-      content: '\2713'
-      font-size: 2.5em;
+        position: absolute
+        top: -.1rem
+        left: .75rem
+    &:checked + label
+      background-color: #5288e9
+      border-color: #555
+      &:after
+        color black
+        content: '\2713'
+        top: 0
+        left: .2rem
+  
+  &.selected
+    background-color: #c9daf8
+    border-color: #b4c4df
+    & input[type=checkbox] + label
+      background-color: #888
+      border: 1px solid #777
+      &:after
+        color: #777

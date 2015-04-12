@@ -25,7 +25,7 @@
 <p>{{prompt}}</p>
 </form>
 <div>
-    <daily ng-repeat="d in dailies" task="d" selected="d.selected" days="d.days"></daily>
+    <daily ng-repeat="d in dailies" task="d" val="sDailies[$index]" days="d.days"></daily>
 </div>
 </body>
 </html>

@@ -1,12 +1,35 @@
 div[task] {
   position: relative;
-  background-color: #808080;
+  background-color: #ccc;
+  border: 1px solid #bbb;
   min-height: 3.4em;
   padding-left: 3.4em;
   margin: 0.2em;
 }
-div[task]>span {
+div[task].selected {
+  background-color: #c9daf8;
+  border-color: #b4c4df;
+}
+div[task].selected input[type=checkbox] + label {
+  background-color: #888;
+  border: 1px solid #777;
+}
+div[task].selected input[type=checkbox] + label:after {
+  color: #777;
+}
+div[task] div {
+  padding: 0.5em;
+  font-size: 1.3em;
+}
+div[task] .main-check {
   position: absolute;
+  left: 0;
+  top: 0;
+}
+div[task] .day-checks {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 div[task] input[type=checkbox] {
   display: none;
@@ -14,36 +37,30 @@ div[task] input[type=checkbox] {
 div[task] input[type=checkbox] + label {
   width: 3em;
   height: 3em;
-  background-color: #00f;
+  background-color: #666;
+  border: 1px solid #555;
   display: inline-block;
   margin: 0.2em;
   cursor: pointer;
-  position: absolute;
+  position: relative;
   left: 0;
+  top: -1px;
+}
+div[task] input[type=checkbox] + label:after {
+  color: #444;
+  content: '\25cb';
+  font-size: 2.5em;
+  position: absolute;
+  top: -0.1rem;
+  left: 0.75rem;
 }
 div[task] input[type=checkbox]:checked + label {
-  background-color: #008000;
+  background-color: #5288e9;
+  border-color: #555;
 }
 div[task] input[type=checkbox]:checked + label:after {
+  color: #000;
   content: '\2713';
-  font-size: 2.5em;
-}
-div[task] .day-checks input[type=checkbox] {
-  display: none;
-}
-div[task] .day-checks input[type=checkbox] + label {
-  width: 3em;
-  height: 3em;
-  background-color: #00f;
-  display: inline-block;
-  margin: 0.2em;
-  cursor: pointer;
-  position: initial;
-}
-div[task] .day-checks input[type=checkbox]:checked + label {
-  background-color: #008000;
-}
-div[task] .day-checks input[type=checkbox]:checked + label:after {
-  content: '\2713';
-  font-size: 2.5em;
+  top: 0;
+  left: 0.2rem;
 }

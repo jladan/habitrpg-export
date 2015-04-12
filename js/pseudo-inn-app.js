@@ -15,9 +15,7 @@ angular.module('pseudoInnApp', ['habitService'])
             return t.type === "daily";
         });
 
-        for (var i in $scope.dailies)
-            $scope.dailies.days = $scope.dailies.repeat;
-
+        $scope.sDailies = new Array($scope.dailies.length);
         // TODO Reduce it to dailies which have no days selected
         $scope.prompt = "Which dailies do you want to disable?";
 
@@ -78,17 +76,17 @@ angular.module('pseudoInnApp', ['habitService'])
         replace: true,
         scope: {
             task: '=',
-            selected: '=',
+            val: '=',
             days: '=',
         },
         controller: ['$scope', function ($scope) {
             $scope.keys = ['su','m','t','w','th','f','s'];
 
-            $scope.days = {};
+            $scope.days = [];
             for (var i in $scope.keys)
-                $scope.days[$scope.keys[i]] = $scope.task.repeat[$scope.keys[i]] || false;
+                $scope.days[i] = $scope.task.repeat[$scope.keys[i]] || false;
         }],
-        template: '<div><input type="checkbox" id="{{task.id}}" ng-model="selected"></input><label for="{{task.id}}"></label>{{task.text}}<span class="day-checks"><span ng-repeat="day in keys"><input type="checkbox" id="{{task.id + day}} ng-model="days[day]"></input><label for="{{task.id+day}}"></label></span></span></div>',
+        template: '<div ng-class="{selected: val}"><span class="main-check"><input type="checkbox" id="{{task.id}}" ng-model="val"></input><label for="{{task.id}}"></label></span><div>{{task.text}}</div><span class="day-checks"><span ng-repeat="day in days track by $index"><input type="checkbox" id="{{task.id + $index}}" ng-model="days[$index]"></input><label for="{{task.id+$index}}"></label></span></span></div>',
         // templateUrl: 'templates/daily.html'
     };
 })

@@ -1,0 +1,42 @@
+
+
+div[task]
+  position: relative
+  background-color: grey
+  min-height: 3.4em;
+  padding-left: 3.4em;
+  margin: .2em
+  &>span
+    position: absolute
+  & input[type=checkbox]
+    display: none
+    & + label
+      width: 3em
+      height: 3em
+      background-color: blue
+      display: inline-block
+      margin: .2em
+      cursor: pointer
+      position: absolute
+      left: 0
+    &:checked + label
+      background-color: green
+      &:after
+        content: '\2713'
+        font-size: 2.5em;
+
+div[task] .day-checks input[type=checkbox]
+  display: none
+  & + label
+    width: 3em
+    height: 3em
+    background-color: blue
+    display: inline-block
+    margin: .2em
+    cursor: pointer
+    position: initial
+  &:checked + label
+    background-color: green
+    &:after
+      content: '\2713'
+      font-size: 2.5em;

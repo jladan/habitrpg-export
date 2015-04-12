@@ -1,0 +1,49 @@
+div[task] {
+  position: relative;
+  background-color: #808080;
+  min-height: 3.4em;
+  padding-left: 3.4em;
+  margin: 0.2em;
+}
+div[task]>span {
+  position: absolute;
+}
+div[task] input[type=checkbox] {
+  display: none;
+}
+div[task] input[type=checkbox] + label {
+  width: 3em;
+  height: 3em;
+  background-color: #00f;
+  display: inline-block;
+  margin: 0.2em;
+  cursor: pointer;
+  position: absolute;
+  left: 0;
+}
+div[task] input[type=checkbox]:checked + label {
+  background-color: #008000;
+}
+div[task] input[type=checkbox]:checked + label:after {
+  content: '\2713';
+  font-size: 2.5em;
+}
+div[task] .day-checks input[type=checkbox] {
+  display: none;
+}
+div[task] .day-checks input[type=checkbox] + label {
+  width: 3em;
+  height: 3em;
+  background-color: #00f;
+  display: inline-block;
+  margin: 0.2em;
+  cursor: pointer;
+  position: initial;
+}
+div[task] .day-checks input[type=checkbox]:checked + label {
+  background-color: #008000;
+}
+div[task] .day-checks input[type=checkbox]:checked + label:after {
+  content: '\2713';
+  font-size: 2.5em;
+}

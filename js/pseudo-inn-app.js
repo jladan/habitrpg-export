@@ -88,7 +88,7 @@ angular.module('pseudoInnApp', ['habitService'])
             for (var i in $scope.keys)
                 $scope.days[$scope.keys[i]] = $scope.task.repeat[$scope.keys[i]] || false;
         }],
-        template: '<div><input type="checkbox" id="{{task.id}}" ng-model="selected"></input><label for="{{task.id}}"><i></i></label>{{task.text}}<span ng-repeat="day in keys"><input type="checkbox" id="{{task.id + day}} ng-model="days[day]"></input><label for="{{task.id+day}}"><i></i></label></div>',
+        template: '<div><input type="checkbox" id="{{task.id}}" ng-model="selected"></input><label for="{{task.id}}"></label>{{task.text}}<span class="day-checks"><span ng-repeat="day in keys"><input type="checkbox" id="{{task.id + day}} ng-model="days[day]"></input><label for="{{task.id+day}}"></label></span></span></div>',
         // templateUrl: 'templates/daily.html'
     };
 })

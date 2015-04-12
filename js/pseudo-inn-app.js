@@ -9,14 +9,14 @@ angular.module('pseudoInnApp', ['habitService'])
     $scope.mv = this;
     var _this = this;
 
-    // this dailies is for the scopes of the directives
-    // while the $scope's dailies is for the actual tasks
-    this.dailies = [];
     var enterInnFetch = function (tasks) {
         // The data returned is already parsed as JSON
         $scope.dailies = tasks.filter(function (t) {
             return t.type === "daily";
         });
+
+        for (var i in $scope.dailies)
+            $scope.dailies.days = $scope.dailies.repeat;
 
         // TODO Reduce it to dailies which have no days selected
         $scope.prompt = "Which dailies do you want to disable?";
@@ -70,11 +70,6 @@ angular.module('pseudoInnApp', ['habitService'])
         else
             console.error('This should only be used after things have been fetched');
     };
-
-    this.addDaily = function (scope) {
-        this.dailies.push(scope);
-    };
-    
 }])
 
 .directive('daily', function () {
@@ -82,15 +77,18 @@ angular.module('pseudoInnApp', ['habitService'])
         restrict: 'E',
         replace: true,
         scope: {
-            task: '='
+            task: '=',
+            selected: '=',
+            days: '=',
         },
         controller: ['$scope', function ($scope) {
+            $scope.keys = ['su','m','t','w','th','f','s'];
+
+            $scope.days = {};
+            for (var i in $scope.keys)
+                $scope.days[$scope.keys[i]] = $scope.task.repeat[$scope.keys[i]] || false;
         }],
-        link: function(scope, element, attrs, innCtrl) {
-            scope.$parent.mv.addDaily(scope);
-            //innCtrl.addDaily(scope);
-        },
-        template: '<div>{{task.text}}</div>',
+        template: '<div><input type="checkbox" id="{{task.id}}" ng-model="selected"></input><label for="{{task.id}}"><i></i></label>{{task.text}}<span ng-repeat="day in keys"><input type="checkbox" id="{{task.id + day}} ng-model="days[day]"></input><label for="{{task.id+day}}"><i></i></label></div>',
         // templateUrl: 'templates/daily.html'
     };
 })

@@ -1,3 +1,13 @@
+button {
+  font-size: 1em;
+}
+fieldset {
+  margin-bottom: 1em;
+}
+fieldset>p {
+  display: inline;
+  margin: 0;
+}
 div[task] {
   position: relative;
   background-color: #ccc;

@@ -26,6 +26,21 @@ angular.module('habitService', [])
     };
     api.fetchTasks = api.fetchData;
 
+    api.updateTask = function (user, key, task, success, error) {
+        console.log("updating " + task.text);
+        console.log(task);
+        var req = {
+                method: 'PUT',
+                url: rooturl + 'user/tasks/'+task.id,
+                headers: {
+                'x-api-key': key, 
+                'x-api-user': user
+                },
+                data: task,
+        };
+        $http(req).success(success).error(error || success);
+    };
+
     /** Tools to save and retrieve the userID and Key from localstorage
      */
     api.saveId = function (id) {

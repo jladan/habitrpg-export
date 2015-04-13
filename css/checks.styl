@@ -1,4 +1,11 @@
+button
+  font-size: 1em
 
+fieldset
+  margin-bottom: 1em
+  &>p
+    display:inline
+    margin: 0
 
 div[task]
   position: relative
@@ -7,6 +14,14 @@ div[task]
   min-height: 3.4em;
   padding-left: 3.4em;
   margin: .2em
+  &.selected
+    background-color: #c9daf8
+    border-color: #b4c4df
+    & input[type=checkbox] + label
+      background-color: #888
+      border: 1px solid #777
+      &:after
+        color: #777
   & div             // for the task description
     padding: .5em
     font-size: 1.3em 
@@ -47,11 +62,3 @@ div[task]
         top: 0
         left: .2rem
   
-  &.selected
-    background-color: #c9daf8
-    border-color: #b4c4df
-    & input[type=checkbox] + label
-      background-color: #888
-      border: 1px solid #777
-      &:after
-        color: #777

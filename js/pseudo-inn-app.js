@@ -1,5 +1,13 @@
 'use strict';
 
+var storage = {};
+storage.saveTasks = function (tasks) {
+    localStorage.setItem("savedTasks", JSON.stringify(tasks));
+};
+storage.loadTasks = function () {
+    return JSON.parse(localStorage.getItem("savedTasks")) || [];
+};
+
 angular.module('pseudoInnApp', ['habitService'])
 
 .controller('pseudoInnCtrl', ['$scope', 'habitAPI',
@@ -8,15 +16,15 @@ angular.module('pseudoInnApp', ['habitService'])
     // because it's nice to have access to the controller
     $scope.mv = this;
     var _this = this;
+    this.keys = ['su','m','t','w','th','f','s'];
 
     var enterInnFetch = function (tasks) {
         // The data returned is already parsed as JSON
         $scope.dailies = tasks.filter(function (t) {
             return t.type === "daily";
         });
-
         $scope.sDailies = new Array($scope.dailies.length);
-        // TODO Reduce it to dailies which have no days selected
+
         $scope.prompt = "Which dailies do you want to disable?";
 
         $scope.entering = true;
@@ -27,19 +35,13 @@ angular.module('pseudoInnApp', ['habitService'])
         $scope.dailies = tasks.filter(function (t) {
             return t.type === "daily";
         });
-
         // TODO Reduce it to dailies which have no days selected
+        $scope.sDailies = new Array($scope.dailies.length);
+
         $scope.prompt = "Which dailies do you want to reactivate, and for what days?";
 
         $scope.leaving = true;
     };
-
-    var clearDailies = function () {
-        $scope.dailies = [];
-        _this.dailies = [];
-    };
-
-
 
     $scope.userId = habitrpg.getSavedId();
     $scope.apiKey = habitrpg.getSavedKey();
@@ -47,27 +49,65 @@ angular.module('pseudoInnApp', ['habitService'])
     $scope.enterInn = function () {
         habitrpg.saveId($scope.userId);
         habitrpg.saveKey($scope.apiKey);
-        clearDailies();
         habitrpg.fetchData($scope.userId, $scope.apiKey, enterInnFetch);
     };
 
     $scope.leaveInn = function () {
         habitrpg.saveId($scope.userId);
         habitrpg.saveKey($scope.apiKey);
-        clearDailies();
-        habitrpg.fetchData($scope.userId, $scope.apiKey, leaveInnFetch);
+        leaveInnFetch(storage.loadTasks())
+        //habitrpg.fetchData($scope.userId, $scope.apiKey, leaveInnFetch);
     };
 
     $scope.confirm = function () {
-        if ($scope.entering) {
-            // TODO Disable all checked off dailies
-        }
-        else if ($scope.leaving) {
-            // TODO Set the days of all checked off dailies
-        }
+        if ($scope.entering)
+            _this.deactivateDailies();
+        else if ($scope.leaving) 
+            _this.reactivateDailies();
         else
             console.error('This should only be used after things have been fetched');
     };
+
+    this.deactivateDailies = function () {
+        var i,j;
+        var toSave = []
+        for (i in $scope.sDailies) {
+            if ($scope.sDailies[i])
+                toSave.push($scope.dailies[i]);
+        }
+        storage.saveTasks(toSave);
+        for (i in toSave) {
+            for (j in toSave[i].repeat)
+                toSave[i].repeat[j] = false;
+            habitrpg.updateTask($scope.userId, $scope.apiKey, toSave[i], 
+                    function (data, s) {
+                console.log(data, s);
+            }, function (data, s) {
+                console.log('error:', data, s);
+            });
+        }
+
+    }
+
+    this.reactivateDailies = function () {
+        var i,j;
+        var toSave = []
+        for (i in $scope.sDailies) {
+            if ($scope.sDailies[i])
+                toSave.push($scope.dailies[i]);
+        }
+        storage.saveTasks(toSave);
+        for (i in toSave) {
+            for (j in _this.keys)
+                toSave[i].repeat[_this.keys[j]] = toSave[i].days[j];
+            habitrpg.updateTask($scope.userId, $scope.apiKey, toSave[i], 
+                    function (data, s) {
+                console.log(data, s);
+            }, function (data, s) {
+                console.log('error:', data, s);
+            });
+        }
+    }
 }])
 
 .directive('daily', function () {
@@ -80,11 +120,10 @@ angular.module('pseudoInnApp', ['habitService'])
             days: '=',
         },
         controller: ['$scope', function ($scope) {
-            $scope.keys = ['su','m','t','w','th','f','s'];
-
+            this.keys = ['su','m','t','w','th','f','s'];
             $scope.days = [];
-            for (var i in $scope.keys)
-                $scope.days[i] = $scope.task.repeat[$scope.keys[i]] || false;
+            for (var i in this.keys)
+                $scope.days[i] = $scope.task.repeat[this.keys[i]] || false;
         }],
         template: '<div ng-class="{selected: val}"><span class="main-check"><input type="checkbox" id="{{task.id}}" ng-model="val"></input><label for="{{task.id}}"></label></span><div>{{task.text}}</div><span class="day-checks"><span ng-repeat="day in days track by $index"><input type="checkbox" id="{{task.id + $index}}" ng-model="days[$index]"></input><label for="{{task.id+$index}}"></label></span></span></div>',
         // templateUrl: 'templates/daily.html'

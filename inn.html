@@ -21,8 +21,8 @@
     <button ng-click='enterInn()' ng-disabled="entering || leaving">Enter the Inn</button>
     <button ng-click='leaveInn()' ng-disabled="entering || leaving">Leave the Inn</button>
     <button ng-click='confirm()' ng-disabled="!(entering||leaving)">Confirm</button>
+<span>{{prompt}}</span>
 </div>
-<p>{{prompt}}</p>
 </form>
 <div>
     <daily ng-repeat="d in dailies" task="d" val="sDailies[$index]" days="d.days"></daily>

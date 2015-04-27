@@ -79,12 +79,22 @@ angular.module('pseudoInnApp', ['habitService'])
         for (i in toSave) {
             for (j in toSave[i].repeat)
                 toSave[i].repeat[j] = false;
-            habitrpg.updateTask($scope.userId, $scope.apiKey, toSave[i], 
-                    function (data, s) {
+            // XXX The functions are created here, so that the closure works
+            var task = $scope.dailies[i];
+            task.err = function(data, s) {
                 console.log(data, s);
-            }, function (data, s) {
-                console.log('error:', data, s);
-            });
+                this.working = false;
+                this.error = true;
+            };
+            task.suc = function(data, s) {
+                console.log(data, s);
+                this.working = false;
+                this.success = true;
+            };
+            task.working = true;
+            habitrpg.updateTask($scope.userId, $scope.apiKey, toSave[i], 
+                    task.suc.bind(task),
+                    task.err.bind(task));
         }
 
     }
@@ -100,12 +110,22 @@ angular.module('pseudoInnApp', ['habitService'])
         for (i in toSave) {
             for (j in _this.keys)
                 toSave[i].repeat[_this.keys[j]] = toSave[i].days[j];
-            habitrpg.updateTask($scope.userId, $scope.apiKey, toSave[i], 
-                    function (data, s) {
+            // XXX The functions are created here, so that the closure works
+            var task = $scope.dailies[i];
+            task.err = function(data, s) {
                 console.log(data, s);
-            }, function (data, s) {
-                console.log('error:', data, s);
-            });
+                this.working = false;
+                this.error = true;
+            };
+            task.suc = function(data, s) {
+                console.log(data, s);
+                this.working = false;
+                this.success = true;
+            };
+            task.working = true;
+            habitrpg.updateTask($scope.userId, $scope.apiKey, toSave[i], 
+                    task.suc.bind(task),
+                    task.err.bind(task));
         }
     }
 }])
@@ -125,7 +145,7 @@ angular.module('pseudoInnApp', ['habitService'])
             for (var i in this.keys)
                 $scope.days[i] = $scope.task.repeat[this.keys[i]] || false;
         }],
-        template: '<div ng-class="{selected: val}"><span class="main-check"><input type="checkbox" id="{{task.id}}" ng-model="val"></input><label for="{{task.id}}"></label></span><div>{{task.text}}</div><span class="day-checks"><span ng-repeat="day in days track by $index"><input type="checkbox" id="{{task.id + $index}}" ng-model="days[$index]"></input><label for="{{task.id+$index}}"></label></span></span></div>',
+        template: '<div ng-class="{selected: val,success: task.success,error: task.error, working:task.working}"><span class="main-check"><input type="checkbox" id="{{task.id}}" ng-model="val"></input><label for="{{task.id}}"></label></span><div>{{task.text}}</div><span class="day-checks"><span ng-repeat="day in days track by $index"><input type="checkbox" id="{{task.id + $index}}" ng-model="days[$index]"></input><label for="{{task.id+$index}}"></label></span></span></div>',
         // templateUrl: 'templates/daily.html'
     };
 })

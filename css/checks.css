@@ -20,6 +20,12 @@ div[task].selected {
   background-color: #c9daf8;
   border-color: #b4c4df;
 }
+div[task].success {
+  background-color: #6af488;
+}
+div[task].error {
+  background-color: #fd4730;
+}
 div[task].selected input[type=checkbox] + label {
   background-color: #888;
   border: 1px solid #777;
@@ -74,3 +80,4 @@ div[task] input[type=checkbox]:checked + label:after {
   top: 0;
   left: 0.2rem;
 }
+

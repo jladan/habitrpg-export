@@ -59,11 +59,19 @@ angular.module('pseudoInnApp', ['habitService'])
         //habitrpg.fetchData($scope.userId, $scope.apiKey, leaveInnFetch);
     };
 
+    $scope.cancel = function () {
+        $scope.entering = false;
+        $scope.leaving = false;
+    };
     $scope.confirm = function () {
-        if ($scope.entering)
+        if ($scope.entering) {
+            $scope.entering = false;
             _this.deactivateDailies();
-        else if ($scope.leaving) 
+        }
+        else if ($scope.leaving) {
+            $scope.leaving = false;
             _this.reactivateDailies();
+        }
         else
             console.error('This should only be used after things have been fetched');
     };

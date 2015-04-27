@@ -21,6 +21,7 @@
     <button ng-click='enterInn()' ng-disabled="entering || leaving">Enter the Inn</button>
     <button ng-click='leaveInn()' ng-disabled="entering || leaving">Leave the Inn</button>
     <button ng-click='confirm()' ng-disabled="!(entering||leaving)">Confirm</button>
+    <button ng-click='cancel()' ng-disabled="!(entering||leaving)">Cancel</button>
 <span>{{prompt}}</span>
 </div>
 </form>
